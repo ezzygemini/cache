@@ -1,0 +1,14 @@
+{
+  "name": "cache",
+  "description": "A lightweight caching system.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ezzygemini/cache.git"
+  },
+  "license": "MIT",
+  "version": "0.1.0",
+  "dependencies": {
+    "humanize": "0.0.9",
+    "object-sizeof": "^1.1.1"
+  }
+}
