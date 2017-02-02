@@ -46,14 +46,16 @@ class CacheLibrary extends CacheBase {
   /**
    * Returns the cache instance.
    * @param {string} key The cache instance.
+   * @param {*=} defaultValue The default value.
    * @returns {*}
    */
-  get(key) {
+  get(key, defaultValue) {
     const value = this.entries[key];
     if (value && !value.expired) {
       return this.entries[key].value;
     }
     delete this.entries[key];
+    return defaultValue;
   }
 
   /**
