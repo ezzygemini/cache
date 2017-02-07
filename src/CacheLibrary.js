@@ -5,8 +5,8 @@ class CacheEntry {
 
   /**
    * Sets the value of the entry and the expiration.
-   * @param value
-   * @param expires
+   * @param {*} value The value of the cached entry.
+   * @param {number=} expires The expiration of the entry (defaults to 30 days)
    */
   constructor(value, expires) {
     this.value = value;
@@ -68,6 +68,16 @@ class CacheLibrary extends CacheBase {
   add(key, value, expires) {
     this.entries[key] = new CacheEntry(value, expires);
     return this.entries[key];
+  }
+
+  /**
+   * Puts an entry into the cached permanently (or 30 years from now).
+   * @param {string} key The key to enter.
+   * @param {*} value The value.
+   * @returns {CacheEntry}
+   */
+  addPerm(key, value) {
+    return this.add(key, value, 9.461e+11);
   }
 
   /**
