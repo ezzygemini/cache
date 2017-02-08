@@ -40,9 +40,9 @@ describe('Cache', () => {
     const library = cache.getLibrary('thirdLibrary');
     library.add('someKey', 'first');
     Promise.all([
-      library.getIf('someKey', () => Promise.resolve('second'))
+      library.getKeyOrResolve('someKey', () => Promise.resolve('second'))
         .then(() => expect(library.get('someKey')).toBe('first')),
-      library.getIf('undefKey', () => Promise.resolve('third'))
+      library.getKeyOrResolve('undefKey', () => Promise.resolve('third'))
         .then(() => expect(library.get('undefKey')).toBe('third'))
     ]).then(done);
   });

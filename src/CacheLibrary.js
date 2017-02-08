@@ -103,17 +103,28 @@ class CacheLibrary extends CacheBase {
   }
 
   /**
-   * Check if a key exists and send it or resolve the
-   * promise and save it to the cache.
+   * Check if a key exists and returns it. If not, the second argument
+   * will tried to be resolved.
    * @param {string} key The cache key.
    * @param {Function<Promise>} promiseFn The promise that will return a value.
+   * @param {number=} expires The timeout number of ms to expire the entry.
+   * @returns {Promise.<*>}
    */
-  getIf(key, promiseFn) {
+  getKeyOrResolve(key, promiseFn, expires) {
     if (this.has(key)) {
       return Promise.resolve(this.get(key));
     }
     return promiseFn()
-      .then(data => this.add(key, data).value);
+      .then(data => this.add(key, data, expires).value);
+  }
+
+  /**
+   * Shortcut to the long getKeyOrResolve method.
+   * @param {*} args The arguments to pass.
+   * @returns {Promise.<*>}
+   */
+  getOrElse(...args){
+    return this.getKeyOrResolve.apply(this, args);
   }
 
   /**
