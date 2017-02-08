@@ -8,23 +8,26 @@ class CacheEntry {
    * @param {*} value The value of the cached entry.
    * @param {number=} expires The expiration of the entry (defaults to 30 days)
    */
-  constructor(value, expires) {
+  constructor (value, expires = 0) {
+    if (expires <= 0) {
+      expires = 9.461e+11;
+    }
     this.value = value;
-    this.expires = new Date().getTime() + (expires || 2.628e+9);
+    this.expires = new Date().getTime() + expires;
   }
 
   /**
    * Checks if the entry is expired.
    * @returns {boolean}
    */
-  get expired() {
+  get expired () {
     return new Date().getTime() > this.expires;
   }
 }
 
 class CacheLibrary extends CacheBase {
 
-  constructor(key) {
+  constructor (key) {
     super(key);
 
     /**
@@ -49,7 +52,7 @@ class CacheLibrary extends CacheBase {
    * @param {*=} defaultValue The default value.
    * @returns {*}
    */
-  get(key, defaultValue) {
+  get (key, defaultValue) {
     const value = this.entries[key];
     if (value && !value.expired) {
       return this.entries[key].value;
@@ -65,19 +68,9 @@ class CacheLibrary extends CacheBase {
    * @param {number=} expires The number of milliseconds to expire.
    * @returns {CacheEntry}
    */
-  add(key, value, expires) {
+  add (key, value, expires) {
     this.entries[key] = new CacheEntry(value, expires);
     return this.entries[key];
-  }
-
-  /**
-   * Puts an entry into the cached permanently (or 30 years from now).
-   * @param {string} key The key to enter.
-   * @param {*} value The value.
-   * @returns {CacheEntry}
-   */
-  addPerm(key, value) {
-    return this.add(key, value, 9.461e+11);
   }
 
   /**
@@ -85,7 +78,7 @@ class CacheLibrary extends CacheBase {
    * @param {string} key The chache key.
    * @returns {boolean}
    */
-  remove(key) {
+  remove (key) {
     if (this.entries[key] === undefined) {
       return false;
     }
@@ -98,7 +91,7 @@ class CacheLibrary extends CacheBase {
    * @param {string} key The key
    * @returns {boolean}
    */
-  has(key) {
+  has (key) {
     return this.entries[key] !== undefined;
   }
 
@@ -110,7 +103,7 @@ class CacheLibrary extends CacheBase {
    * @param {number=} expires The timeout number of ms to expire the entry.
    * @returns {Promise.<*>}
    */
-  getKeyOrResolve(key, promiseFn, expires) {
+  getKeyOrResolve (key, promiseFn, expires) {
     if (this.has(key)) {
       return Promise.resolve(this.get(key));
     }
@@ -123,7 +116,7 @@ class CacheLibrary extends CacheBase {
    * @param {*} args The arguments to pass.
    * @returns {Promise.<*>}
    */
-  getOrElse(...args){
+  getOrElse (...args) {
     return this.getKeyOrResolve.apply(this, args);
   }
 
@@ -131,7 +124,7 @@ class CacheLibrary extends CacheBase {
    * Returns the keys of the library.
    * @returns {Array}
    */
-  get keys() {
+  get keys () {
     return Object.keys(this.entries);
   }
 
@@ -139,7 +132,7 @@ class CacheLibrary extends CacheBase {
    * The key of the library.
    * @returns {{}}
    */
-  describe() {
+  describe () {
     const keys = Object.keys(this.entries);
     const entries = {};
     for (let entry of keys) {
