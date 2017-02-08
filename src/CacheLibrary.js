@@ -92,7 +92,7 @@ class CacheLibrary extends CacheBase {
    * @returns {boolean}
    */
   has (key) {
-    return this.entries[key] !== undefined;
+    return this.entries[key] !== undefined && !this.entries[key].expired;
   }
 
   /**
