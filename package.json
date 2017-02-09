@@ -16,6 +16,6 @@
     "object-sizeof": "^1.1.1"
   },
   "devDependencies": {
-    "testing": "git://github.com/ezzygemini/testing.git"
+    "testing": "ezzygemini/testing"
   }
 }
