@@ -96,6 +96,14 @@ class Cache {
   }
 
   /**
+   * Flushes the cache.
+   */
+  flush() {
+    this._libraries = {};
+    this._dictionaries = {};
+  }
+
+  /**
    * Enable cache.
    */
   enable() {
@@ -103,8 +111,8 @@ class Cache {
     if (this._interval) {
       clearInterval(this._interval);
     }
-    for(let lib in this._libraries){
-      if(this._libraries.hasOwnProperty(lib)){
+    for (let lib in this._libraries) {
+      if (this._libraries.hasOwnProperty(lib)) {
         this._libraries[lib].enable();
       }
     }
@@ -124,8 +132,8 @@ class Cache {
     if (this._interval) {
       clearInterval(this._interval);
     }
-    for(let lib in this._libraries){
-      if(this._libraries.hasOwnProperty(lib)){
+    for (let lib in this._libraries) {
+      if (this._libraries.hasOwnProperty(lib)) {
         this._libraries[lib].disable();
       }
     }
@@ -136,7 +144,7 @@ class Cache {
    * @param {string} key The library key.
    * @returns {CacheLibrary}
    */
-  getLibrary(key) {
+  getLibrary(key = 'defaultLibrary') {
     if (!this._libraries[key] || Cache._isExpired(this._libraries[key])) {
       this._libraries[key] = new CacheLibrary(key, this._disabled);
     }
@@ -148,7 +156,7 @@ class Cache {
    * @param {string} key The library key.
    * @returns {CacheDictionary}
    */
-  getDictionary(key) {
+  getDictionary(key = 'defaultDictionary') {
     if (!this._dictionaries[key] || Cache._isExpired(this._dictionaries[key])) {
       this._dictionaries[key] = new CacheDictionary(key);
     }
@@ -196,6 +204,30 @@ class Cache {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Checks if it has a library.
+   * @param {string} key The name of the library.
+   * @returns {boolean}
+   */
+  hasLibrary(key) {
+    if (this._disabled) {
+      return false;
+    }
+    return !!this._libraries[key];
+  }
+
+  /**
+   * Checks to see if it has a dictionary.
+   * @param {string} key The name of the dictionary.
+   * @returns {boolean}
+   */
+  hasDictionary(key) {
+    if (this._disabled) {
+      return false;
+    }
+    return !!this._dictionaries[key];
   }
 
   /**

@@ -21,11 +21,18 @@ class CacheLibrary extends CacheBase {
     this._disabled = disabled;
 
     // Enable the library.
-    if(disabled){
+    if (disabled) {
       this.disable();
-    }else{
+    } else {
       this.enable();
     }
+  }
+
+  /**
+   * Flushes the cache.
+   */
+  flush() {
+    this.entries = {};
   }
 
   /**

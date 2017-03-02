@@ -9,6 +9,13 @@ class CacheDictionary extends CacheBase {
   }
 
   /**
+   * Flushes the trie.
+   */
+  flush() {
+    this.trie = new Trie();
+  }
+
+  /**
    * Adds a string to the trie.
    * @param {string} value The value.
    */
