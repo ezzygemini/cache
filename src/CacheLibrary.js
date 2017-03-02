@@ -1,33 +1,10 @@
 const sizeof = require('object-sizeof');
 const CacheBase = require('./CacheBase');
-
-class CacheEntry {
-
-  /**
-   * Sets the value of the entry and the expiration.
-   * @param {*} value The value of the cached entry.
-   * @param {number=} expires The expiration of the entry (defaults to 30 days)
-   */
-  constructor (value, expires = 0) {
-    if (expires <= 0) {
-      expires = 9.461e+11;
-    }
-    this.value = value;
-    this.expires = new Date().getTime() + expires;
-  }
-
-  /**
-   * Checks if the entry is expired.
-   * @returns {boolean}
-   */
-  get expired () {
-    return new Date().getTime() > this.expires;
-  }
-}
+const CacheEntry = require('./CacheEntry');
 
 class CacheLibrary extends CacheBase {
 
-  constructor (key) {
+  constructor(key, disabled) {
     super(key);
 
     /**
@@ -37,13 +14,43 @@ class CacheLibrary extends CacheBase {
     this.entries = {};
 
     /**
-     * Add an interval to flush the cache every 10 minutes.
+     * A small flag to enable/disable globally.
+     * @type {boolean}
+     * @private
      */
-    setInterval(() => {
+    this._disabled = disabled;
+
+    // Enable the library.
+    if(disabled){
+      this.disable();
+    }else{
+      this.enable();
+    }
+  }
+
+  /**
+   * Enable this library.
+   */
+  enable() {
+    this._disabled = false;
+    if (this._interval) {
+      clearTimeout(this._interval);
+    }
+    // Add an interval to flush the cache every 10 minutes.
+    this._interval = setInterval(() => {
       Object.keys(this.entries).forEach(key => this.get(key));
       logger.debug({title: 'Cache', message: `Cache flushed on ${key}`});
     }, 600000);
+  }
 
+  /**
+   * Disable this cache library.
+   */
+  disable() {
+    this._disabled = true;
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
   }
 
   /**
@@ -52,7 +59,7 @@ class CacheLibrary extends CacheBase {
    * @param {*=} defaultValue The default value.
    * @returns {*}
    */
-  get (key, defaultValue) {
+  get(key, defaultValue) {
     const value = this.entries[key];
     if (value && !value.expired) {
       return this.entries[key].value;
@@ -68,7 +75,7 @@ class CacheLibrary extends CacheBase {
    * @param {number=} expires The number of milliseconds to expire.
    * @returns {CacheEntry}
    */
-  add (key, value, expires) {
+  add(key, value, expires) {
     this.entries[key] = new CacheEntry(value, expires);
     return this.entries[key];
   }
@@ -78,7 +85,7 @@ class CacheLibrary extends CacheBase {
    * @param {string} key The chache key.
    * @returns {boolean}
    */
-  remove (key) {
+  remove(key) {
     if (this.entries[key] === undefined) {
       return false;
     }
@@ -91,8 +98,9 @@ class CacheLibrary extends CacheBase {
    * @param {string} key The key
    * @returns {boolean}
    */
-  has (key) {
-    return this.entries[key] !== undefined && !this.entries[key].expired;
+  has(key) {
+    return !this._disabled &&
+      this.entries[key] !== undefined && !this.entries[key].expired;
   }
 
   /**
@@ -103,7 +111,7 @@ class CacheLibrary extends CacheBase {
    * @param {number=} expires The timeout number of ms to expire the entry.
    * @returns {Promise.<*>}
    */
-  getKeyOrResolve (key, promiseFn, expires) {
+  getKeyOrResolve(key, promiseFn, expires) {
     if (this.has(key)) {
       return Promise.resolve(this.get(key));
     }
@@ -116,7 +124,7 @@ class CacheLibrary extends CacheBase {
    * @param {*} args The arguments to pass.
    * @returns {Promise.<*>}
    */
-  getOrElse (...args) {
+  getOrElse(...args) {
     return this.getKeyOrResolve.apply(this, args);
   }
 
@@ -124,7 +132,10 @@ class CacheLibrary extends CacheBase {
    * Returns the keys of the library.
    * @returns {Array}
    */
-  get keys () {
+  get keys() {
+    if (!this._disabled) {
+      return [];
+    }
     return Object.keys(this.entries);
   }
 
@@ -132,8 +143,8 @@ class CacheLibrary extends CacheBase {
    * The key of the library.
    * @returns {{}}
    */
-  describe () {
-    const keys = Object.keys(this.entries);
+  describe() {
+    const keys = this._disabled ? [] : Object.keys(this.entries);
     const entries = {};
     for (let entry of keys) {
       entries[entry] = {

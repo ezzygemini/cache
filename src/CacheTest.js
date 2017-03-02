@@ -1,12 +1,10 @@
+const Cache = require('./Cache');
+/**@type {Cache}*/
+let cache;
+
 describe('Cache', () => {
 
-  const Cache = require('./Cache');
-  /**@type {Cache}*/
-  let cache;
-
-  beforeEach(() => {
-    cache = new Cache();
-  });
+  beforeEach(() => cache = new Cache());
 
   it('should start with an empty cache', done => {
     expect(cache).toEqual(jasmine.objectContaining({
@@ -29,10 +27,9 @@ describe('Cache', () => {
     const library = cache.getLibrary('secondLibrary');
     expect(library.has('someKey')).toBe(false);
     expect(library.get('someKey', 'asdf')).toBe('asdf');
-    library.add('someKey', false);
+    library.add('someKey', 123);
     expect(library.has('someKey')).toBe(true);
-    expect(library.get('someKey')).toBe(false);
-    expect();
+    expect(library.get('someKey')).toBe(123);
     done();
   });
 
@@ -48,7 +45,7 @@ describe('Cache', () => {
   });
 
   it('should be able to expire an entry accordingly', done => {
-    const library = cache.getLibrary('secondLibrary');
+    const library = cache.getLibrary('fourthLibrary');
     library.add('someKey', 'first', 100);
     expect(library.get('someKey')).toBe('first');
     setTimeout(() => {
@@ -57,5 +54,30 @@ describe('Cache', () => {
     }, 200);
   });
 
-});
+  it('should disable cache properly', done => {
+    const library = cache.getLibrary('fifthLibrary');
+    expect(library.has('someKey')).toBe(false);
+    library.add('someKey', 123);
+    expect(library.has('someKey')).toBe(true);
+    expect(library.keys).toEqual(['someKey']);
+    cache.disable();
+    expect(library.has('someKey')).toBe(false);
+    expect(library.keys).toEqual([]);
+    cache.enable();
+    // Promise checks
+    library.getKeyOrResolve('a', () => Promise.resolve(1))
+      .then(result => expect(result).toBe(1))
+      .then(() => library.getKeyOrResolve('a', () => Promise.resolve(2)))
+      .then(result => expect(result).toBe(1))
+      .then(() => cache.disable())
+      .then(result => library.getKeyOrResolve('a', () => Promise.resolve(3)))
+      .then(result => expect(result).toBe(3))
+      .then(result => library.getKeyOrResolve('a', () => Promise.resolve(4)))
+      .then(result => expect(result).toBe(4))
+      .then(result => cache.enable())
+      .then(() => library.getKeyOrResolve('a', () => Promise.resolve(5)))
+      .then(result => expect(result).toBe(4))
+      .then(done);
+  });
 
+});

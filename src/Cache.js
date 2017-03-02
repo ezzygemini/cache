@@ -28,17 +28,14 @@ class Cache {
     this._timestamp = new Date().getTime();
 
     /**
-     * Set an interval to flush the libraries at least every 24 hours.
-     *
-     * @type {number}
+     * Check to disable any cache.
+     * @type {boolean}
      * @private
      */
-    setInterval(() => {
-      Object.keys(this._libraries).forEach(key => this.getLibrary(key));
-      Object.keys(this._dictionaries).forEach(key => this.getLibrary(key));
-      logger.debug({title: 'Cache', message: `Cache flushed on all libraries`});
-    }, 8.64e+7);
+    this._disabled = false;
 
+    // Enable the cache.
+    this.enable();
   }
 
   /**
@@ -99,13 +96,49 @@ class Cache {
   }
 
   /**
+   * Enable cache.
+   */
+  enable() {
+    this._disabled = false;
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
+    for(let lib in this._libraries){
+      if(this._libraries.hasOwnProperty(lib)){
+        this._libraries[lib].enable();
+      }
+    }
+    // Set an interval to flush the libraries at least every 24 hours.
+    this._interval = setInterval(() => {
+      Object.keys(this._libraries).forEach(key => this.getLibrary(key));
+      Object.keys(this._dictionaries).forEach(key => this.getLibrary(key));
+      logger.debug({title: 'Cache', message: `Cache flushed on all libraries`});
+    }, 8.64e+7);
+  }
+
+  /**
+   * Disable any cache.
+   */
+  disable() {
+    this._disabled = true;
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
+    for(let lib in this._libraries){
+      if(this._libraries.hasOwnProperty(lib)){
+        this._libraries[lib].disable();
+      }
+    }
+  }
+
+  /**
    * Obtains a cache library.
    * @param {string} key The library key.
    * @returns {CacheLibrary}
    */
   getLibrary(key) {
     if (!this._libraries[key] || Cache._isExpired(this._libraries[key])) {
-      this._libraries[key] = new CacheLibrary(key);
+      this._libraries[key] = new CacheLibrary(key, this._disabled);
     }
     return this._libraries[key];
   }
