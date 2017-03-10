@@ -20,6 +20,13 @@ class CacheLibrary extends CacheBase {
      */
     this._disabled = disabled;
 
+    /**
+     * Temporary promise holder to avoid multiple calls during resolution.
+     * @type {{}}
+     * @private
+     */
+    this._promises = {};
+
     // Enable the library.
     if (disabled) {
       this.disable();
@@ -124,8 +131,14 @@ class CacheLibrary extends CacheBase {
     if (this.has(key)) {
       return Promise.resolve(this.get(key));
     }
-    return promiseFn()
-      .then(data => this.add(key, data, expires).value);
+    if (this._promises[key]) {
+      return this._promises[key];
+    }
+    this._promises[key] = promiseFn();
+    return this._promises[key].then(data => {
+      delete this._promises[key];
+      return this.add(key, data, expires).value;
+    });
   }
 
   /**
