@@ -20,13 +20,6 @@ class CacheLibrary extends CacheBase {
      */
     this._disabled = disabled;
 
-    /**
-     * Temporary promise holder to avoid multiple calls during resolution.
-     * @type {{}}
-     * @private
-     */
-    this._promises = {};
-
     // Enable the library.
     if (disabled) {
       this.disable();
@@ -125,26 +118,19 @@ class CacheLibrary extends CacheBase {
    * @param {string} key The cache key.
    * @param {Function<Promise>} promiseFn The promise that will return a value.
    * @param {number=} expires The timeout number of ms to expire the entry.
-   * @returns {Promise.<*>}
+   * @returns {*}
    */
   getKeyOrResolve(key, promiseFn, expires) {
     if (this.has(key)) {
-      return Promise.resolve(this.get(key));
+      return this.get(key);
     }
-    if (this._promises[key]) {
-      return this._promises[key];
-    }
-    this._promises[key] = promiseFn();
-    return this._promises[key].then(data => {
-      delete this._promises[key];
-      return this.add(key, data, expires).value;
-    });
+    return this.add(key, promiseFn(), expires).value;
   }
 
   /**
    * Shortcut to the long getKeyOrResolve method.
    * @param {*} args The arguments to pass.
-   * @returns {Promise.<*>}
+   * @returns {*}
    */
   getOrElse(...args) {
     return this.getKeyOrResolve.apply(this, args);
