@@ -1,3 +1,4 @@
+const {logger} = require('logger');
 const CacheDictionary = require('./CacheDictionary');
 const CacheLibrary = require('./CacheLibrary');
 let defaultInstance;
