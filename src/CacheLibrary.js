@@ -47,8 +47,10 @@ class CacheLibrary extends CacheBase {
     // Add an interval to flush the cache every 10 minutes.
     this._interval = setInterval(() => {
       Object.keys(this.entries).forEach(key => {
-        this.get(key);
-        logger.debug({title: 'Cache', message: `Cache flushed on ${key}`});
+        if (this.entries[key] && this.entries[key].expired) {
+          delete this.entries[key];
+          logger.deepDebug('Cache', `Cache key ${key} deleted`);
+        }
       });
     }, 600000);
   }
