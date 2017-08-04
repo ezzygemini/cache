@@ -16,7 +16,7 @@ describe('Cache', () => {
     done();
   });
 
-  describe('lirary tests', () => {
+  describe('library tests', () => {
 
     beforeEach(() => library = cache.getLibrary());
 
@@ -46,11 +46,18 @@ describe('Cache', () => {
     it('should only create a key when needed', done => {
       library.add('someKey', 'first');
       Promise.all([
-        library.getKeyOrResolve('someKey', () => Promise.resolve('second'))
-          .then(() => expect(library.get('someKey')).toBe('first')),
-        library.getKeyOrResolve('undefKey', () => Promise.resolve('third'))
-          .then(() => expect(library.get('undefKey')).toBe('third'))
-      ]).then(done);
+        library.getKeyOrResolve('someKey', () => Promise.resolve('second')),
+        library.getOrElse('undefKey', () => Promise.resolve('third'))
+      ])
+        .then(() => Promise.all([
+          library.get('someKey'),
+          library.get('undefKey')
+        ]))
+        .then(([result1, result2]) => {
+          expect(result1).toBe('first');
+          expect(result2).toBe('third');
+          done();
+        });
     });
 
     it('should be able to expire an entry accordingly', done => {

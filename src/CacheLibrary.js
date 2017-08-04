@@ -144,7 +144,7 @@ class CacheLibrary extends CacheBase {
    * @returns {Array}
    */
   get keys() {
-    if (!this._disabled) {
+    if (this._disabled) {
       return [];
     }
     return Object.keys(this.entries);
