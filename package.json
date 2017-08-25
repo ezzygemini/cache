@@ -1,12 +1,12 @@
 {
-  "name": "cache",
+  "name": "ezzy-cache",
   "description": "A lightweight caching system.",
   "repository": {
     "type": "git",
     "url": "https://github.com/ezzygemini/cache.git"
   },
   "scripts": {
-    "test": "node node_modules/testing"
+    "test": "node node_modules/ezzy-testing"
   },
   "license": "MIT",
   "version": "0.1.0",
@@ -16,6 +16,6 @@
     "object-sizeof": "^1.2.0"
   },
   "devDependencies": {
-    "testing": "ezzygemini/testing"
+    "ezzy-testing": "^0.1.2"
   }
 }
