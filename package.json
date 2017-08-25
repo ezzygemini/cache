@@ -9,8 +9,9 @@
     "test": "node node_modules/ezzy-testing"
   },
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
+    "ezzy-logger": "^0.1.1",
     "humanize": "0.0.9",
     "node-trie": "0.0.1",
     "object-sizeof": "^1.2.0"

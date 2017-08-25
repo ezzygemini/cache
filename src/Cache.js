@@ -1,4 +1,4 @@
-const {logger} = require('logger');
+const {logger} = require('ezzy-logger');
 const CacheDictionary = require('./CacheDictionary');
 const CacheLibrary = require('./CacheLibrary');
 let defaultInstance;

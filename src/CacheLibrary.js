@@ -1,4 +1,4 @@
-const {logger} = require('logger');
+const {logger} = require('ezzy-logger');
 const sizeof = require('object-sizeof');
 const CacheBase = require('./CacheBase');
 const CacheEntry = require('./CacheEntry');
