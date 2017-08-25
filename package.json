@@ -1,15 +1,20 @@
 {
   "name": "ezzy-cache",
   "description": "A lightweight caching system.",
+  "version": "0.1.10",
+  "author": {
+    "name": "Moises Romero",
+    "url": "http://ezzygemini.com",
+    "email": "ezzygemini@gmail.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ezzygemini/cache.git"
+    "url": "https://github.com/ezzygemini/ezzy-cache.git"
   },
   "scripts": {
     "test": "node node_modules/ezzy-testing"
   },
   "license": "MIT",
-  "version": "0.1.1",
   "dependencies": {
     "ezzy-logger": "^0.1.1",
     "humanize": "0.0.9",
