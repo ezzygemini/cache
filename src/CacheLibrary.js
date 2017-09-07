@@ -1,4 +1,4 @@
-const {logger} = require('ezzy-logger');
+const {deepDebug} = require('ezzy-logger').logger;
 const sizeof = require('object-sizeof');
 const CacheBase = require('./CacheBase');
 const CacheEntry = require('./CacheEntry');
@@ -49,7 +49,7 @@ class CacheLibrary extends CacheBase {
       Object.keys(this.entries).forEach(key => {
         if (this.entries[key] && this.entries[key].expired) {
           delete this.entries[key];
-          logger.deepDebug('Cache', `Cache key ${key} deleted`);
+          deepDebug('Cache', `Cache key ${key} deleted`);
         }
       });
     }, 600000);

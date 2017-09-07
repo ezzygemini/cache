@@ -16,12 +16,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ezzy-logger": "^0.1.1",
+    "ezzy-logger": "^0.1.15",
     "humanize": "0.0.9",
     "node-trie": "0.0.1",
     "object-sizeof": "^1.2.0"
   },
   "devDependencies": {
-    "ezzy-testing": "^0.1.2"
+    "ezzy-testing": "^0.1.10"
   }
 }

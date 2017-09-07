@@ -21,7 +21,7 @@ class CacheEntry {
      * Time this entry expires.
      * @type {number}
      */
-    this.expires = new Date().getTime() + expires;
+    this.expires = Date.now() + expires;
 
   }
 
@@ -30,7 +30,7 @@ class CacheEntry {
    * @returns {boolean}
    */
   get expired () {
-    return new Date().getTime() > this.expires;
+    return Date.now() > this.expires;
   }
 }
 

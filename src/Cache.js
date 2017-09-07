@@ -1,4 +1,4 @@
-const {logger} = require('ezzy-logger');
+const {deepDebug} = require('ezzy-logger').logger;
 const CacheDictionary = require('./CacheDictionary');
 const CacheLibrary = require('./CacheLibrary');
 let defaultInstance;
@@ -26,7 +26,7 @@ class Cache {
      * @type {number}
      * @private
      */
-    this._timestamp = new Date().getTime();
+    this._timestamp = Date.now();
 
     /**
      * Check to disable any cache.
@@ -65,7 +65,7 @@ class Cache {
    * @constructor
    */
   set TS(date) {
-    this._timestamp = date || new Date().getTime();
+    this._timestamp = date || Date.now();
   }
 
   /**
@@ -78,22 +78,13 @@ class Cache {
   }
 
   /**
-   * Small TS function
-   * @returns {number}
-   * @private
-   */
-  static get _now() {
-    return new Date().getTime();
-  }
-
-  /**
    * Small comparison function.
    * @param {CacheBase} lib The library to check.
    * @returns {boolean}
    * @private
    */
   static _isExpired(lib) {
-    return Cache._now > lib.expiresMs;
+    return Date.now() > lib.expiresMs;
   }
 
   /**
@@ -121,7 +112,7 @@ class Cache {
     this._interval = setInterval(() => {
       Object.keys(this._libraries).forEach(key => this.getLibrary(key));
       Object.keys(this._dictionaries).forEach(key => this.getLibrary(key));
-      logger.deepDebug('Cache', `Cache flushed on all libraries`);
+      deepDebug('Cache', `Cache flushed on all libraries`);
     }, 8.64e+7);
   }
 
