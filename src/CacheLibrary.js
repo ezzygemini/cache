@@ -136,7 +136,7 @@ class CacheLibrary extends CacheBase {
    * @returns {*}
    */
   getOrElse(...args) {
-    return this.getKeyOrResolve.apply(this, args);
+    return this.getKeyOrResolve(...args);
   }
 
   /**
