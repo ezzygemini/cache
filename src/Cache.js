@@ -1,7 +1,7 @@
 const {deepDebug} = require('ezzy-logger').logger;
 const CacheDictionary = require('./CacheDictionary');
 const CacheLibrary = require('./CacheLibrary');
-let defaultInstance;
+let inst;
 
 class Cache {
 
@@ -40,14 +40,22 @@ class Cache {
   }
 
   /**
+   * Shortcut for cache getter.
+   * @returns {Cache}
+   */
+  static get inst(){
+    return Cache.cache;
+  }
+
+  /**
    * Default instantiator.
    * @returns {Cache}
    */
   static get cache() {
-    if (!defaultInstance) {
-      defaultInstance = new Cache();
+    if (!inst) {
+      inst = new Cache();
     }
-    return defaultInstance;
+    return inst;
   }
 
   /**
