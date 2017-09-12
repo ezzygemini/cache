@@ -1,10 +1,16 @@
-const {deepDebug} = require('ezzy-logger').logger;
+const logger = require('ezzy-logger').logger;
 const CacheDictionary = require('./CacheDictionary');
 const CacheLibrary = require('./CacheLibrary');
 let inst;
 
+/**
+ * Cache.
+ */
 class Cache {
 
+  /**
+   * Constructor.
+   */
   constructor() {
 
     /**
@@ -120,7 +126,7 @@ class Cache {
     this._interval = setInterval(() => {
       Object.keys(this._libraries).forEach(key => this.getLibrary(key));
       Object.keys(this._dictionaries).forEach(key => this.getLibrary(key));
-      deepDebug('Cache', `Cache flushed on all libraries`);
+      logger.deepDebug('Cache', `Cache flushed on all libraries`);
     }, 8.64e+7);
   }
 
