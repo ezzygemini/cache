@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ezzy-logger": "^0.1.21",
+    "ezzy-logger": "^0.1.22",
     "handlebars": "^4.0.10",
     "humanize": "0.0.9",
     "node-trie": "0.0.1",
