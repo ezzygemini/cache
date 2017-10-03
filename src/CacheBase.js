@@ -1,4 +1,3 @@
-const humanize = require('humanize');
 const sizeof = require('object-sizeof');
 
 class CacheBase {
@@ -43,7 +42,7 @@ class CacheBase {
    */
   describe() {
     return {
-      expires: humanize.date('Y-m-d H:i:s', this.expires),
+      expires: this.expires.toString(),
       size: sizeof(this),
       flushUrl: `?flush=${this.key}`,
       type: this.constructor.name
