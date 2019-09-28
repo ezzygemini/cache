@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ezzy-logger": "^1.0.14",
+    "ezzy-logger": "^3.1.5",
     "handlebars": "^4.1.2",
     "node-trie": "0.0.1",
     "object-sizeof": "^1.2.0"
