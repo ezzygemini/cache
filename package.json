@@ -23,7 +23,7 @@
     "ezzy-logger": "^1.0.14",
     "handlebars": "^4.1.2",
     "node-trie": "0.0.1",
-    "object-sizeof": "^1.2.0"
+    "object-sizeof": "^1.5.3"
   },
   "devDependencies": {
     "ezzy-testing": "^0.1.26"
